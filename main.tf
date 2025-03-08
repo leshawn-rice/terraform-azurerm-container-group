@@ -1,3 +1,5 @@
+# ACI is container groups
+# https://learn.microsoft.com/en-us/azure/container-instances/container-instances-quickstart-terraform
 
 resource "azurerm_container_group" "this" {
   name                = var.name != null ? var.name : module.name[0].name
@@ -38,7 +40,7 @@ resource "azurerm_container_group" "this" {
       }
 
       dynamic "volume" {
-        for_each = container.value.volume ? [container.value.volume] : []
+        for_each = container.value.volume != null ? [container.value.volume] : []
         iterator = volume
 
         content {
