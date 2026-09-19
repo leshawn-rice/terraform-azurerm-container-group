@@ -88,6 +88,72 @@ EOT
   default     = []
 }
 
+variable "restart_policy" {
+  type        = string
+  description = "(Optional) Restart policy for the container group. Possible values are Always, Never and OnFailure. Defaults to Always."
+  default     = "Always"
+}
+
+variable "dns_name_label" {
+  type        = string
+  description = "(Optional) The DNS label/name for the container group's IP. Only valid when ip_address_type is Public."
+  default     = null
+}
+
+variable "zones" {
+  type        = list(string)
+  description = "(Optional) A list of Availability Zones in which this Container Group is located."
+  default     = null
+}
+
+variable "identity" {
+  type = object({
+    type         = string
+    identity_ids = optional(list(string))
+  })
+  description = <<DESCRIPTION
+  (Optional) An identity block:
+    type         - (Required) SystemAssigned, UserAssigned or 'SystemAssigned, UserAssigned'.
+    identity_ids - (Optional) A list of User Assigned Identity IDs. Required when type includes UserAssigned.
+  DESCRIPTION
+  default     = null
+}
+
+variable "image_registry_credentials" {
+  type = list(object({
+    server                    = string
+    username                  = optional(string)
+    password                  = optional(string)
+    user_assigned_identity_id = optional(string)
+  }))
+  description = <<DESCRIPTION
+  (Optional) One or more image_registry_credential blocks, used to pull images from a private registry:
+    server                    - (Required) The address to use to connect to the registry, e.g. myacr.azurecr.io.
+    username / password       - (Optional) Registry credentials. Omit when pulling with a managed identity.
+    user_assigned_identity_id - (Optional) The User Assigned Identity used to pull the image. Preferred over username/password.
+  DESCRIPTION
+  default     = []
+  sensitive   = true
+}
+
+variable "diagnostics" {
+  type = object({
+    workspace_id  = string
+    workspace_key = string
+    log_type      = optional(string, "ContainerInsights")
+    metadata      = optional(map(string))
+  })
+  description = <<DESCRIPTION
+  (Optional) A diagnostics block which ships container logs to a Log Analytics Workspace:
+    workspace_id  - (Required) The Workspace (Customer) ID of the Log Analytics Workspace.
+    workspace_key - (Required) The Workspace Key of the Log Analytics Workspace.
+    log_type      - (Optional) ContainerInsights or ContainerInstanceLogs. Defaults to ContainerInsights.
+    metadata      - (Optional) Any metadata to be included in the diagnostics.
+  DESCRIPTION
+  default     = null
+  sensitive   = true
+}
+
 variable "application" {
   type        = string
   description = ""
