@@ -1,0 +1,38 @@
+# Configuration for terraform-docs (https://terraform-docs.io).
+#
+# Regenerate the reference tables in README.md with:
+#   terraform-docs .
+#
+# Only the block between the BEGIN_TF_DOCS / END_TF_DOCS markers in README.md is
+# rewritten; everything else in the README is hand-written and is left alone.
+formatter: markdown table
+version: ">= 0.19.0"
+
+content: |-
+  {{ .Requirements }}
+
+  {{ .Inputs }}
+
+  {{ .Outputs }}
+
+output:
+  file: README.md
+  mode: inject
+  template: |-
+    <!-- BEGIN_TF_DOCS -->
+    {{ .Content }}
+    <!-- END_TF_DOCS -->
+
+sort:
+  enabled: false
+
+settings:
+  anchor: true
+  default: true
+  description: true
+  escape: true
+  html: true
+  indent: 3
+  required: true
+  sensitive: true
+  type: true
